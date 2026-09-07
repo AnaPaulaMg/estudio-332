@@ -63,158 +63,106 @@ if (statusLabel && statusDetail && statusDot) {
   window.setInterval(updateOpenStatus, 60000);
 }
 
-// Google Places API Reviews (using Places API New)
-// IMPORTANT: For security, you MUST restrict your API key in Google Cloud Console:
-// 1. Go to https://console.cloud.google.com/apis/credentials
-// 2. Select or create your API key
-// 3. Application restrictions → HTTP referrers (web sites)
-//    → Add your domains (e.g., example.com, *.example.com)
-// 4. API restrictions → Select ONLY "Places API"
-// 5. Save
+// Estudio 332 - Google Places API Integration (SECURE VERSION)
 //
-// 6. Set your API key via:
-//    - Netlify: Site Settings > Build & Deploy > Environment > GOOGLE_PLACES_API_KEY
-//    - Vercel: Project Settings > Environment Variables
-//    - Local dev: Create .env file and use a dev server that injects:
-//        <meta name="google-places-api-key" content="process.env.GOOGLE_PLACES_API_KEY" />
-//    - Or manually set the meta tag content (NOT recommended for production)
+// IMPORTANT: This version uses a secure proxy to avoid exposing your API key.
 //
-// This script reads the API key from:
-//   1. Meta tag: <meta name="google-places-api-key" content="your_key" />
-//   2. Fallback to empty string (will show configuration instructions)
+// 1. A serverless function at /api/places-proxy.js handles communication with Google
+// 2. Your API key is stored securely in Vercel Environment Variables (never exposed)
+// 3. Frontend only communicates with your own domain
+//
+// To set up:
+// 1. Create /api/places-proxy.js with the proxy code (provided separately)
+// 2. Add GOOGLE_PLACES_API_KEY to Vercel Project Settings > Environment Variables
+// 3. Restrict your API key in Google Cloud Console to your domains
+// 4. Deploy!
 
 // ==========================================
-// GOOGLE PLACES API
+// GOOGLE PLACES API (VIA SECURE PROXY)
 // ==========================================
-
-const API_KEY = (() => {
-  const metaTag = document.querySelector('meta[name="google-places-api-key"]');
-
-  return metaTag?.getAttribute("content") || "";
-})();
 
 // Nome usado para encontrar o estabelecimento
 const PLACE_QUERY = "Ronald Ribeiro, Juiz de Fora MG";
 
 // ==========================================
-// BUSCAR O PLACE ID
+// BUSCAR O PLACE ID (VIA PROXY)
 // ==========================================
 
 async function findPlace() {
-  const response = await fetch(
-    "https://places.googleapis.com/v1/places:searchText",
-    {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": API_KEY,
-
-        "X-Goog-FieldMask":
-          "places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount",
-      },
-
-      body: JSON.stringify({
-        textQuery: PLACE_QUERY,
-
-        // Opcional: ajuda o Google a priorizar resultados no Brasil
-        languageCode: "pt-BR",
-      }),
-    },
-  );
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-
-    throw new Error(error.error?.message || `Erro HTTP ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  console.log("Resultados encontrados:", data);
-
-  if (!data.places || data.places.length === 0) {
-    throw new Error("Nenhum estabelecimento encontrado.");
-  }
-
-  // Primeiro resultado
-  const place = data.places[0];
-
-  console.log("Estabelecimento encontrado:", place);
-
-  return place;
-}
-
-// ==========================================
-// BUSCAR AVALIAÇÕES
-// ==========================================
-
-async function fetchReviews() {
   const loader = document.getElementById("reviews-loader");
-
-  if (!API_KEY) {
-    if (loader) {
-      loader.textContent = "API Key do Google não configurada.";
-    }
-
-    console.error("Google Places API key not configured");
-
-    return;
-  }
-
   if (loader) {
     loader.textContent = "Encontrando estabelecimento...";
   }
 
   try {
-    // 1. Encontra o estabelecimento
-    const place = await findPlace();
+    // CHAMA SEU PRÓPRIO PROXY (NUNO GOOGLE DIRETO!)
+    const response = await fetch(
+      `/api/places-proxy?textQuery=${encodeURIComponent(PLACE_QUERY)}&languageCode=pt-BR`,
+    );
 
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar estabelecimento: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    console.log("Resultados encontrados via proxy:", data);
+
+    if (!data.places || data.places.length === 0) {
+      throw new Error("Nenhum estabelecimento encontrado.");
+    }
+
+    // Primeiro resultado
+    const place = data.places[0];
+
+    console.log("Estabelecimento encontrado:", place);
+    return place;
+  } catch (error) {
+    console.error("Erro ao buscar estabelecimento:", error);
+    if (loader) {
+      loader.textContent = "Erro ao buscar estabelecimento.";
+    }
+    throw error;
+  }
+}
+
+// ==========================================
+// BUSCAR AVALIAÇÕES (VIA PROXY)
+// ==========================================
+
+async function fetchReviews() {
+  const loader = document.getElementById("reviews-loader");
+
+  if (!loader) {
+    console.error("Elemento #reviews-loader não encontrado");
+    return;
+  }
+
+  try {
+    // 1. Encontra o estabelecimento via proxy
+    const place = await findPlace();
     const placeId = place.id;
 
     console.log("PLACE ID encontrado:", placeId);
-
-    console.log("Nome:", place.displayName?.text);
-
-    console.log("Endereço:", place.formattedAddress);
-
-    console.log("Avaliações:", place.userRatingCount);
-
-    // ==========================================
-    // 2. BUSCAR DETALHES + REVIEWS
-    // ==========================================
 
     if (loader) {
       loader.textContent = "Carregando avaliações...";
     }
 
+    // 2. Busca detalhes + reviews via proxy
     const response = await fetch(
-      `https://places.googleapis.com/v1/places/${placeId}`,
-      {
-        method: "GET",
-
-        headers: {
-          "X-Goog-Api-Key": API_KEY,
-
-          "X-Goog-FieldMask": "displayName,rating,userRatingCount,reviews",
-        },
-      },
+      `/api/places-proxy?placeId=${encodeURIComponent(placeId)}&fields=displayName,rating,userRatingCount,reviews&languageCode=pt-BR`,
     );
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-
-      throw new Error(error.error?.message || `Erro HTTP ${response.status}`);
+      throw new Error(`Erro ao buscar detalhes: ${response.status}`);
     }
 
     const data = await response.json();
 
     console.log("Detalhes completos do estabelecimento:", data);
 
-    // ==========================================
-    // 3. VERIFICAR REVIEWS
-    // ==========================================
-
+    // 3. Verifica reviews
     if (!data.reviews || data.reviews.length === 0) {
       if (loader) {
         loader.textContent = "Nenhuma avaliação encontrada.";
@@ -229,14 +177,10 @@ async function fetchReviews() {
       return;
     }
 
-    // ==========================================
-    // 4. RENDERIZAR
-    // ==========================================
-
+    // 4. Renderiza
     showReviews(data.reviews, data.rating, data.userRatingCount);
   } catch (error) {
     console.error("Erro ao buscar avaliações:", error);
-
     if (loader) {
       loader.textContent = "Erro ao carregar avaliações.";
     }
@@ -244,38 +188,28 @@ async function fetchReviews() {
 }
 
 // ==========================================
-// MOSTRAR REVIEWS
+// MOSTRAR REVIEWS (MANTIDO IGUAL)
 // ==========================================
 
 function showReviews(reviews, rating, total) {
   const loader = document.getElementById("reviews-loader");
-
   const list = document.getElementById("reviews-list");
 
   if (!list) {
     console.error("#reviews-list não encontrado.");
-
     return;
   }
 
   loader.style.display = "none";
-
-  // Limpa conteúdo anterior
   list.innerHTML = "";
 
-  // ==========================================
   // NOTA GERAL
-  // ==========================================
-
   if (rating !== undefined) {
     const ratingDiv = document.createElement("div");
-
     ratingDiv.className = "review-stars";
 
     const fullStars = Math.floor(rating);
-
     const halfStar = rating % 1 >= 0.5;
-
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
     ratingDiv.textContent =
@@ -284,33 +218,18 @@ function showReviews(reviews, rating, total) {
     list.appendChild(ratingDiv);
   }
 
-  // ==========================================
   // REVIEWS
-  // ==========================================
-
   reviews.slice(0, 3).forEach((review) => {
     const reviewDiv = document.createElement("div");
-
     reviewDiv.className = "review-item";
 
-    // Autor
     const authorName =
       review.authorAttribution?.displayName || "Usuário do Google";
-
-    // Texto
     const reviewText = review.text?.text || "";
-
-    // Data
     const reviewDate = review.relativePublishTimeDescription || "";
-
-    // Estrelas
     const reviewRating = Number(review.rating) || 0;
 
     const stars = "★".repeat(reviewRating) + "☆".repeat(5 - reviewRating);
-
-    // ==========================================
-    // CRIAÇÃO DO HTML
-    // ==========================================
 
     reviewDiv.innerHTML = `
         <div
