@@ -53,6 +53,10 @@ a {
   gap: 10px;
   line-height: 0.9;
 }
+.logo {
+  width: 5rem;
+  height: auto;
+}
 .brand-mark {
   border: 1px solid var(--ink);
   border-radius: 50%;
@@ -783,6 +787,9 @@ h2 em {
     height: 75px;
     padding: 0 6vw;
   }
+  .logo {
+    width: 5rem;
+  }
   .desktop-nav,
   .header-cta {
     display: none;
@@ -1131,6 +1138,9 @@ h2 em {
     margin-top: 50px;
     padding: 35px 28px;
   }
+  .reviews-heading .button {
+    margin-bottom: 32px;
+  }
   .gallery-grid {
     grid-template-rows: 220px 170px 180px 180px;
   }
@@ -1261,27 +1271,26 @@ h2 em {
     padding: 30px;
     margin: 0 -9vw;
   }
-  
+
   .review-header {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .review-item {
     padding: 16px;
     margin-bottom: 12px;
   }
-  
+
   .review-panel .review-stars {
     font-size: 20px;
   }
-  
+
   .review-author {
     font-size: 14px;
   }
-  
+
   .review-text {
     font-size: 14px;
   }
 }
-
