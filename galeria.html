@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e85d3b" />
+    <meta
+      name="description"
+      content="Galeria do Estudio 332: fotos e vídeos do espaço, produções e bastidores."
+    />
+    <title>Galeria | Estudio 332</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="gallery.css" />
+  </head>
+  <body>
+    <div class="page-noise"></div>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Estudio 332 - inicio">
+        <span class="brand-mark">332</span>
+        <span class="brand-text">ESTUDIO<br /><i>fotográfico</i></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Navegacao principal">
+        <a href="index.html#o-estudio">O estúdio</a>
+        <a href="index.html#estrutura">Estrutura</a>
+        <a href="galeria.html" class="is-active">Galeria</a>
+        <a href="index.html#localizacao">Onde estamos</a>
+        <a href="index.html#avaliacoes">Avaliações</a>
+        <a href="index.html#contato">Contato</a>
+      </nav>
+      <a
+        class="button button-dark header-cta"
+        data-whatsapp
+        href="https://wa.me/5500000000000?text=Ol%C3%A1%2C%20quero%20agendar%20o%20Est%C3%BAdio%20332."
+        target="_blank"
+        rel="noreferrer"
+      >
+        <span>Agendar pelo WhatsApp</span><span aria-hidden="true">↗</span>
+      </a>
+      <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </header>
+
+    <main class="gallery-page">
+      <section class="gallery-hero">
+        <div class="section-index">04 / GALERIA</div>
+        <h1>Fotos e vídeos<br /><em>do nosso espaço.</em></h1>
+        <p>
+          Uma seleção de registros do 332 — das paredes aos bastidores, do
+          clique ao corte final.
+        </p>
+      </section>
+
+      <section class="gallery-viewer">
+        <div class="gallery-filters" id="gallery-filters" role="tablist">
+          <button class="filter-btn is-active" data-filter="all" type="button">
+            Todos
+          </button>
+          <button class="filter-btn" data-filter="photo" type="button">
+            Fotos
+          </button>
+          <button class="filter-btn" data-filter="video" type="button">
+            Vídeos
+          </button>
+        </div>
+
+        <div
+          class="media-grid"
+          id="media-grid"
+          aria-label="Galeria de mídia"
+        ></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="index.html"
+        ><span class="brand-mark">332</span
+        ><span class="brand-text">ESTUDIO<br /><i>criativo</i></span></a
+      >
+      <p>Rua tranquila, ideias barulhentas.</p>
+      <a
+        class="made-by"
+        href="https://www.anaprick.com.br"
+        target="_blank"
+        rel="noreferrer"
+        >feito por <strong>AnaPrick Systems</strong> ↗</a
+      >
+    </footer>
+
+    <!-- Lightbox / modal de media -->
+    <div
+      class="lightbox"
+      id="lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Visualização de mídia"
+      hidden
+    >
+      <button
+        class="lightbox-close"
+        id="lightbox-close"
+        type="button"
+        aria-label="Fechar"
+      >
+        ✕
+      </button>
+      <button
+        class="lightbox-nav lightbox-prev"
+        id="lightbox-prev"
+        type="button"
+        aria-label="Mídia anterior"
+      >
+        ←
+      </button>
+      <button
+        class="lightbox-nav lightbox-next"
+        id="lightbox-next"
+        type="button"
+        aria-label="Próxima mídia"
+      >
+        →
+      </button>
+      <div class="lightbox-stage" id="lightbox-stage"></div>
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+
+    <script src="gallery.js"></script>
+  </body>
+</html>

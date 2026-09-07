@@ -1,0 +1,511 @@
+/* =========================================================
+   GALERIA — ESTUDIO 332
+   Design editorial / galeria fotográfica
+   ========================================================= */
+
+.gallery-page {
+  min-height: calc(100vh - 86px);
+  padding: 0 0 80px;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.gallery-hero,
+.gallery-viewer {
+  width: min(100% - 40px, 1240px);
+  margin-inline: auto;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.gallery-hero {
+  padding: 72px 0 42px;
+}
+
+.gallery-hero .section-index {
+  margin-bottom: 24px;
+}
+
+.gallery-hero h1 {
+  max-width: 900px;
+
+  margin: 0 0 24px;
+
+  font: 600 clamp(3.2rem, 7vw, 6.8rem) / 0.9 var(--display);
+
+  letter-spacing: clamp(-2px, -0.35vw, -4px);
+}
+
+.gallery-hero h1 em {
+  color: var(--orange);
+}
+
+.gallery-hero p {
+  max-width: 520px;
+
+  margin: 0;
+
+  font-size: clamp(15px, 1.5vw, 17px);
+  line-height: 1.65;
+
+  color: var(--muted);
+}
+
+/* =========================================================
+   VIEWER
+   ========================================================= */
+
+.gallery-viewer {
+  padding: 0;
+}
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+.gallery-filters {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+
+  margin: 0 0 22px;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.filter-btn {
+  position: relative;
+
+  background: none;
+  border: 0;
+
+  padding: 0 0 13px;
+
+  font: 500 10px var(--mono);
+
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+
+  color: var(--muted);
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.filter-btn::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: -1px;
+
+  height: 2px;
+
+  background: var(--orange);
+
+  transform: scaleX(0);
+  transform-origin: left;
+
+  transition: transform 0.3s ease;
+}
+
+.filter-btn:hover {
+  color: var(--ink);
+}
+
+.filter-btn.is-active {
+  color: var(--ink);
+}
+
+.filter-btn.is-active::after {
+  transform: scaleX(1);
+}
+
+/* =========================================================
+   GRID DA GALERIA — 3 COLUNAS
+   ========================================================= */
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.media-card {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 4 / 3;
+
+  overflow: hidden;
+
+  padding: 0;
+  margin: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  background: var(--blue);
+
+  cursor: pointer;
+
+  isolation: isolate;
+}
+
+/* =========================================================
+   IMAGEM
+   ========================================================= */
+
+.media-card img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  filter: saturate(0.8);
+
+  transform: scale(1);
+
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.4s ease;
+}
+
+/* =========================================================
+   OVERLAY
+   ========================================================= */
+
+.media-card::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+
+  background: linear-gradient(
+    180deg,
+    transparent 45%,
+    rgba(10, 28, 29, 0.78) 100%
+  );
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: opacity 0.35s ease;
+}
+
+/* =========================================================
+   LEGENDA
+   ========================================================= */
+
+.media-card figcaption {
+  position: absolute;
+
+  left: 16px;
+  bottom: 14px;
+
+  z-index: 3;
+
+  margin: 0;
+
+  color: #fff;
+
+  font: 500 10px var(--mono);
+
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+
+  opacity: 0;
+
+  transform: translateY(8px);
+
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* =========================================================
+   BADGE
+   ========================================================= */
+
+.media-card .media-badge {
+  position: absolute;
+
+  top: 12px;
+  right: 12px;
+
+  z-index: 3;
+
+  padding: 5px 8px;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+
+  background: rgba(22, 42, 43, 0.72);
+
+  backdrop-filter: blur(8px);
+
+  color: #fff;
+
+  font: 500 9px var(--mono);
+
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.media-card:hover img {
+  transform: scale(1.06);
+
+  filter: saturate(1);
+}
+
+.media-card:hover::after {
+  opacity: 1;
+}
+
+.media-card:hover figcaption {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+/* =========================================================
+   VÍDEO
+   ========================================================= */
+
+.media-card.is-video img {
+  filter: saturate(0.75) brightness(0.9);
+}
+
+.media-card.is-video::before {
+  content: "▶";
+
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  z-index: 4;
+
+  display: grid;
+  place-items: center;
+
+  width: 52px;
+  height: 52px;
+
+  padding-left: 3px;
+
+  border-radius: 50%;
+
+  background: var(--orange);
+
+  color: #fff;
+
+  font-size: 16px;
+
+  transform: translate(-50%, -50%);
+
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
+}
+
+.media-card.is-video:hover::before {
+  transform: translate(-50%, -50%) scale(1.1);
+
+  background: var(--orange-dark);
+}
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+.media-card.is-hidden {
+  display: none;
+}
+
+/* =========================================================
+   TABLET — 2 COLUNAS
+   ========================================================= */
+
+@media (max-width: 850px) {
+  .media-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .media-card {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* =========================================================
+   MOBILE — 1 COLUNA
+   ========================================================= */
+
+@media (max-width: 520px) {
+  .media-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .media-card {
+    aspect-ratio: 4 / 3;
+  }
+
+  .media-card figcaption {
+    opacity: 0.95;
+    transform: none;
+  }
+
+  .media-card::after {
+    opacity: 0.55;
+  }
+
+  .media-card.is-video::before {
+    width: 44px;
+    height: 44px;
+
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   TOUCH DEVICES
+   ========================================================= */
+
+@media (hover: none) {
+  .media-card figcaption {
+    opacity: 0.95;
+    transform: none;
+  }
+
+  .media-card::after {
+    opacity: 0.55;
+  }
+}
+/* =========================================================
+   LIGHTBOX / MODAL
+   ========================================================= */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 28, 29, 0.92);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+/* Opcional: Garante exibição quando ativo e esconde com [hidden] */
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox[hidden] {
+  display: none !important;
+}
+
+/* Palco / Conteúdo da imagem ou vídeo */
+.lightbox-stage {
+  position: relative;
+  max-width: 90vw;
+  max-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-stage img,
+.lightbox-stage video {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* Legenda */
+.lightbox-caption {
+  margin-top: 16px;
+  color: #fff;
+  font: 500 12px var(--mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+/* Botão Fechar */
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1010;
+  padding: 8px;
+}
+
+/* Botões de Navegação Anterior / Próximo */
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 20px;
+  padding: 12px 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1010;
+  transition: background 0.2s ease;
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-prev {
+  left: 24px;
+}
+
+.lightbox-next {
+  right: 24px;
+}
